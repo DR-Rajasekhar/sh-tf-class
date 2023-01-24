@@ -1,39 +1,26 @@
-resource "aws_subnet" "subnet1-public" {
+# creating public subnets
+resource "aws_subnet" "public-subnets" {
+  # count             = 3
+  count             = length(var.public_subnet_cidr_blocks)
   vpc_id            = aws_vpc.testvpc01.id
-  cidr_block        = var.public_subnet1_cidr
-  availability_zone = "us-west-2a"
-
-
+  cidr_block        = element(var.public_subnet_cidr_blocks, count.index)
+  availability_zone = element(var.azs, count.index)
   tags = {
-    Name  = "${var.vpc_name}-Public-Subnet-1"
+    Name  = "${local.vpc_name_lower}-Public-Subnet-${count.index + 1}"
     Owner = "DevOpsB27"
   }
 }
 
 
-resource "aws_subnet" "subnet2-public" {
+#creating private subnets
+resource "aws_subnet" "private-subnets" {
+  # count             = 3
+  count             = length(var.private_subnet_cidr_blocks)
   vpc_id            = aws_vpc.testvpc01.id
-  cidr_block        = var.public_subnet2_cidr
-  availability_zone = "us-west-2b"
-
-
+  cidr_block        = element(var.private_subnet_cidr_blocks, count.index)
+  availability_zone = element(var.azs, count.index)
   tags = {
-    Name  = "${var.vpc_name}-Public-Subnet-2"
+    Name  = "${local.vpc_name_lower}-Private-Subnet-${count.index + 1}"
     Owner = "DevOpsB27"
   }
-}
-
-
-resource "aws_subnet" "subnet3-public" {
-  vpc_id            = aws_vpc.testvpc01.id
-  cidr_block        = var.public_subnet3_cidr
-  availability_zone = "us-west-2c"
-
-
-  tags = {
-    Name  = "${var.vpc_name}-Public-Subnet-3"
-    Owner = "DevOpsB27"
-  }
-
-
 }
